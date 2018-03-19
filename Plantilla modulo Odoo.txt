@@ -1,0 +1,141 @@
+##############  __init__.py ##############
+
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+# Copyright (C) 2016 MARLON FALCON HDEZ (<http://www.marlonfalcon.cl>).
+# contact: contacto@marlonfalcon.cl
+
+#############################################################################
+
+
+import template
+
+
+##############  __openerp__.py ##############
+
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+# Copyright (C) 2016 MARLON FALCON HDEZ (<http://www.marlonfalcon.cl>).
+# contact: contacto@marlonfalcon.cl
+
+######################################################################
+
+{
+    'name': 'Nombre del Módulo',
+    'version': '1.0',
+    'author': 'Marlon Falcon Hernandez',
+    'category': 'Nueva',
+    'summary': 'Ejemplo de un módulo de Odoo',
+    'website': 'https://www.marlonfalcon.cl',
+    'description': """
+Es un módulo de ejemplo
+======================
+Con este modulo haremos nuestra primera aplicación en Odoo.
+
+Nota: Necesita Ventas.
+    """,
+    'license' : 'AGPL-3',
+    'depends': ['sale'],
+    'update_xml': [
+        'template_view.xml',
+    ],
+    'installable': True,
+    'active': False,
+}
+
+
+##############  template.py ##############
+
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+# Copyright (C) 2016 MARLON FALCON HDEZ (<http://www.marlonfalcon.cl>).
+# contact: contacto@marlonfalcon.cl
+
+######################################################################
+
+from openerp.osv import fields, osv , orm
+from datetime import time, datetime
+from openerp.tools.translate import _
+
+
+class template_modelo(osv.osv):
+	_name = 'template.modelo'
+	_description = 'Formulario de Ejemplo'
+	_columns = {
+	     # Campo oblidatorio para buscar , readonly = True
+	     'name' : fields.char('Nombre' , size=256, required=True, help='Este es el nombre'),
+       'fecha': fields.date('Fecha', required=True ),
+       'edad' : fields.integer('Edad' , required=True),
+       # utilizamos los socios de negocios
+       'usuario_id' : fields.many2one('res.partner','Usuario' , required=True),
+       # Campo para activar el registro es necesario
+       'active': fields.boolean('Activo'),
+	}
+	_defaults = {
+       'state' : 'draft',
+       'active' : 'true',
+	}
+
+
+template_modelo()
+
+
+##############  template_view.xml ##############
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	 <data>
+	 	<!--  Vamos a grabar datos  -->
+	 	<record id="template__modelo_tree" model="ir.ui.view">
+	 		<field name="name">template.modelo.tree</field>
+	 		<field name="model">template.modelo</field>
+            	<field name="arch" type="xml"> 
+            	   <tree string ="Listado de...">
+            	   	  <field name="name" />
+            	   	  <field name="fecha" />
+            	   	  <field name="state" />
+            	   </tree>      	
+                </field>
+	    </record>
+
+
+	   <!--  Vamos a grabar datos  -->
+	 	<record id="template_modelo_form" model="ir.ui.view">
+	 		<field name="name">template.modelo.form</field>
+	 		<field name="model">template.modelo</field>
+            	<field name="arch" type="xml"> 
+            	   <form string ="Formulario de ..." version="9.0">
+            	   	<!--  Cuerpo  -->
+            	   	<sheet>
+            	   	<group> 
+            	   		 <field name="name" />
+            	   	     <field name="fecha" />
+            	   	     <field name="edad" />
+                         <field name="usuario_id"/>
+            	   	     <field name="active" />                       
+            	   	</group>                 
+            	   	</sheet>
+            	   	 </form>      	
+                </field>
+	    </record>
+
+        <!--  Definimos los eventos -->
+        <record id="template_modelo_action" model="ir.actions.act_window">
+        	<field name="name">Modelo</field>
+        	<field name="res_model">template.modelo</field>
+        	<field name="view_type">form</field>
+        	<field name="view_mode">tree,form</field>
+        </record>
+
+        <!--  Definimos el menu-->
+        <menuitem id="template_modelo_menu" name="Template" />
+        <menuitem id="template_modelo_submenu" name="Modelo" parent="template_modelo_menu" sequence="0" />
+
+        <!--  Enlazamos la acción al submenú-->
+        <menuitem id="template_modelo_menu_action" name="Template" parent="template_modelo_submenu" sequence="0" action="template_modelo_action"/>
+
+
+     </data>
+</openerp>
